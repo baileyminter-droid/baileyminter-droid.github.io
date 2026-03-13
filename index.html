@@ -1,0 +1,140 @@
+<div class="col-md-6">
+<form id="webleadform" action="https://support.arborgold.net/ag/jobinformation/webleadsapi/add" method="post">
+
+<div class="form-row">
+<div class="form-group col-md-6">
+<label for="FirstName">First Name</label> *
+<input type="text" class="form-control" id="FirstName" name="FirstName" maxlength="150" required>
+</div>
+</div>
+
+<div class="form-row">
+<div class="form-group col-md-6">
+<label for="LastName">Last Name</label> *
+<input type="text" class="form-control" id="LastName" name="LastName" maxlength="150" required>
+</div>
+</div>
+
+<div class="form-row">
+<div class="form-group col-md-6">
+<label for="Company">Company Name</label>
+<input type="text" class="form-control" id="Company" name="Company" maxlength="150">
+</div>
+</div>
+
+<div class="form-row">
+<div class="form-group col-md-6">
+<label for="Address">Address</label> *
+<input type="text" class="form-control" id="Address" name="Address" maxlength="150" required>
+</div>
+</div>
+
+<div class="form-row">
+<div class="form-group col-md-4">
+<label for="City">City</label> *
+<input type="text" class="form-control" id="City" name="City" required>
+</div>
+
+<div class="form-group col-md-2">
+<label for="State">State</label> *
+<input type="text" class="form-control" id="State" name="State" required>
+</div>
+
+<div class="form-group col-md-3">
+<label for="Zip">Zip</label> *
+<input type="text" class="form-control" id="Zip" name="Zip" required>
+</div>
+</div>
+
+<div class="form-row">
+<div class="form-group col-md-6">
+<label for="Phone">Phone</label> *
+<input type="text" class="form-control" id="Phone" name="Phone" required>
+</div>
+</div>
+
+<div class="form-row">
+<div class="form-group col-md-6">
+<label for="Email">Email</label> *
+<input type="email" class="form-control" id="Email" name="Email" required>
+</div>
+</div>
+
+<div class="form-row">
+<div class="form-group col-md-6">
+<label for="MarketSource">Ad Source</label>
+<select class="form-control" id="MarketSource" name="MarketSource">
+<option value="Customer Repeat">Customer Repeat</option>
+<option value="Facebook">Facebook</option>
+<option value="Google">Google</option>
+<option value="Referral">Referral</option>
+</select>
+</div>
+</div>
+
+<div class="form-row">
+<div class="form-group col-md-6">
+<label for="Subject">Subject</label> *
+<input type="text" class="form-control" id="Subject" name="Subject" required>
+</div>
+</div>
+
+<div class="form-row">
+<div class="form-group col-md-6">
+<label for="Message">Message</label>
+<textarea class="form-control" id="Message" name="Message"></textarea>
+</div>
+</div>
+
+<div class="form-row">
+<div class="form-group col-md-6">
+<div class="g-recaptcha" data-sitekey="6LezVm0rAAAAAFmqD38-XeMW6yos-UdlLAaeFVrR"></div>
+</div>
+</div>
+
+<input type="hidden" id="CompanyCode" name="CompanyCode" value="UCP-3MUI5H-149P9C-149P9C">
+
+<input type="hidden" name="RedirectUrl" value="https://baileyminter-droid.github.io/thankyou.html">
+
+<button type="submit" class="btn btn-primary">Submit</button>
+
+</form>
+</div>
+
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css">
+<script src="https://www.google.com/recaptcha/api.js" async defer></script>
+
+<script>
+
+/* ZIP ROUTING */
+const zipRouting = [
+{ min:15000, max:15999, code:"UCP-3MUI5H-149P9C-149P9C" },
+{ min:16000, max:16999, code:"SECOND-COMPANY-CODE" },
+{ min:17000, max:17999, code:"THIRD-COMPANY-CODE" }
+];
+
+function getCompanyCode(zip){
+
+zip=parseInt(zip);
+
+for(const zone of zipRouting){
+
+if(zip>=zone.min && zip<=zone.max){
+return zone.code;
+}
+
+}
+
+return "UCP-3MUI5H-149P9C-149P9C";
+
+}
+
+document.getElementById("webleadform").addEventListener("submit",function(){
+
+const zip=document.getElementById("Zip").value;
+
+document.getElementById("CompanyCode").value=getCompanyCode(zip);
+
+});
+
+</script>
