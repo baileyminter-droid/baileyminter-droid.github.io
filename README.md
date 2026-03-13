@@ -1,2 +1,167 @@
-# baileyminter-droid.github.io
-Test
+<div class="col-md-6">
+  <form id="webleadform" action="https://support.arborgold.net/ag/jobinformation/webleadsapi/add" method="post">
+    <div class="form-row">
+      <div class="form-group col-md-6">
+        <label for="FirstName">First Name</label> *
+        <input type="text" class="form-control" id="FirstName" name="FirstName" maxlength="150" required>
+      </div>
+    </div>
+
+    <div class="form-row">
+      <div class="form-group col-md-6">
+        <label for="LastName">Last Name</label> *
+        <input type="text" class="form-control" id="LastName" name="LastName" maxlength="150" required>
+      </div>
+    </div>
+
+    <div class="form-row">
+      <div class="form-group col-md-6">
+        <label for="Company">Company Name</label>
+        <input type="text" class="form-control" id="Company" name="Company" maxlength="150">
+      </div>
+    </div>
+
+    <div class="form-row">
+      <div class="form-group col-md-6">
+        <label for="Address">Address</label> *
+        <input type="text" class="form-control" id="Address" name="Address" maxlength="150" required>
+      </div>
+    </div>
+
+    <div class="form-row" style="min-width: 400px">
+      <div class="form-group col-md-2">
+        <label for="City">City</label> *
+        <input type="text" class="form-control" id="City" name="City" maxlength="150" required>
+      </div>
+      <div class="form-group col-md-2"> 
+        <label for="State">State</label> * 
+        <input type="text" class="form-control" id="State" name="State" maxlength="150" required>
+      </div>
+      <div class="form-group col-md-2">
+        <label for="Zip">Zip</label> *
+        <input type="text" class="form-control" id="Zip" name="Zip" maxlength="10" required>
+      </div>
+    </div>
+
+    <div class="form-row">
+      <div class="form-group col-md-6">
+        <label for="Phone">Phone</label> *
+        <input type="text" class="form-control" id="Phone" name="Phone" maxlength="75" required>
+      </div>
+    </div>
+
+    <div class="form-row">
+      <div class="form-group col-md-6">
+        <label for="Email">Email</label> *
+        <input type="email" class="form-control" id="Email" name="Email" maxlength="125" required>
+      </div>
+    </div>
+
+    <div class="form-row">
+      <div class="form-group col-md-6">
+        <label for="MarketSource">Ad Source</label>
+        <select class="form-control" id="MarketSource" name="MarketSource" required>
+          <option value="Customer Repeat">Customer Repeat</option>
+          <option value="E-Newsletter">E-Newsletter</option>
+          <option value="Facebook">Facebook</option>
+          <option value="Friend">Friend</option>
+          <option value="Google">Google</option>
+          <option value="Newspaper ">Newspaper </option>
+          <option value="Referral">Referral</option>
+          <option value="Truck Signs">Truck Signs</option>
+          <option value="Yellow Page">Yellow Page</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="form-row">
+      <div class="form-group col-md-6">
+        <label for="Subject">Subject</label> *
+        <input type="text" class="form-control" id="Subject" name="Subject" maxlength="125" required>
+      </div>
+    </div>
+
+    <div class="form-row">
+      <div class="form-group col-md-6">
+        <label for="Message">Message</label>
+        <textarea class="form-control" id="Message" name="Message" rows="3" maxlength="500"></textarea>
+      </div>
+    </div>
+
+    <div class="form-row">
+      <div class="form-group col-md-6">
+        <div class="g-recaptcha" data-sitekey="6LezVm0rAAAAAFmqD38-XeMW6yos-UdlLAaeFVrR" data-size="compact"></div>
+      </div>
+    </div>
+
+    <!-- Company code will be set dynamically based on ZIP -->
+    <input type="hidden" id="CompanyCode" name="CompanyCode" value="UCP-3MUI5H-149P9C-149P9C">
+    <input type="hidden" id="RedirectUrl" name="RedirectUrl" value="https://baileyminter-droid.github.io/">
+
+    <button type="submit" class="btn btn-primary">Submit</button>
+  </form>
+</div>
+
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css"/>
+<script src="https://www.google.com/recaptcha/enterprise.js" async defer></script>
+
+<script>
+const defaultCompanyCode = "UCP-3MUI5H-149P9C-149P9C";
+
+/* ZIP → COMPANY routing */
+const zipRouting = [
+  { min: 15000, max: 15999, code: "UCP-3MUI5H-149P9C-149P9C" }, // main office
+  { min: 16000, max: 16999, code: "SECOND-COMPANY-CODE" },       // replace with real ArborGold code
+  { min: 17000, max: 17999, code: "THIRD-COMPANY-CODE" }         // replace with real ArborGold code
+];
+
+function getCompanyCode(zip) {
+  zip = parseInt(zip);
+  for (const zone of zipRouting) {
+    if (zip >= zone.min && zip <= zone.max) {
+      return zone.code;
+    }
+  }
+  // fallback to main company code if ZIP not in range
+  return defaultCompanyCode;
+}
+
+document.getElementById("webleadform").addEventListener("submit", async function(e) {
+  e.preventDefault();
+
+  // Check CAPTCHA
+  const captcha = grecaptcha.enterprise.getResponse();
+  if (captcha.length === 0) {
+    alert("Please verify that you're not a robot.");
+    return;
+  }
+
+  // Assign company code based on ZIP
+  const zip = document.getElementById("Zip").value;
+  const companyCode = getCompanyCode(zip);
+  document.getElementById("CompanyCode").value = companyCode;
+
+  const form = e.target;
+  const formData = new FormData(form);
+  const urlEncodedData = new URLSearchParams(formData).toString();
+
+  try {
+    const response = await fetch(form.action, {
+      method: "POST",
+      headers: { "Content-Type": "application/x-www-form-urlencoded" },
+      body: urlEncodedData
+    });
+
+    if (response.ok) {
+      const redirectUrl = form.querySelector("[name='RedirectUrl']").value;
+      if (redirectUrl) window.location.href = redirectUrl;
+    } else {
+      const errorText = await response.text();
+      alert(`Error submitting form: ${errorText}`);
+    }
+  } catch (error) {
+    console.error("Error submitting form:", error);
+    alert("A network error occurred. Please try again.");
+  }
+});
+</script>
